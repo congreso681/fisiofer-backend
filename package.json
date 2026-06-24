@@ -1,0 +1,19 @@
+{
+  "name": "fisiocenter-backend",
+  "version": "1.0.0",
+  "description": "Backend API REST para el sistema de turnos de FisioCenter — Proyecto académico Ingeniería de Requerimientos",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "keywords": ["fisioterapia", "turnos", "api", "academico"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.0",
+    "morgan": "^1.10.0",
+    "pg": "^8.11.0"
+  }
+}
