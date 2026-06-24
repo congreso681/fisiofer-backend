@@ -1,9 +1,5 @@
 const { pool } = require('../config/database');
 
-/**
- * Inicializa las tablas de la base de datos y carga datos de prueba.
- * Solo inserta seed data si las tablas están vacías.
- */
 async function initializeDatabase() {
   try {
     // ─── Crear tablas ───────────────────────────────────────────────
@@ -56,39 +52,56 @@ async function initializeDatabase() {
 
     console.log('📋 Tablas creadas/verificadas correctamente.');
 
-    // ─── Verificar si hay datos ────────────────────────────────────
+    // ─── Verificar si hay profesionales ────────────────────────────
     const result = await pool.query('SELECT COUNT(*) as count FROM profesionales');
     const profesionalesCount = parseInt(result.rows[0].count, 10);
 
     if (profesionalesCount === 0) {
-      console.log('🌱 Insertando datos de prueba...');
+      console.log('🌱 Insertando datos de prueba de Fisiofer SPA...');
 
       // ── Profesionales ──
       await pool.query(`
         INSERT INTO profesionales (nombre, especialidad, email) VALUES
-        ('Lic. Carolina Méndez', 'Kinesiología / Terapia Manual', 'carolina.mendez@fisiocenter.com'),
-        ('Lic. Martín Suárez', 'Rehabilitación Deportiva / Punción Seca', 'martin.suarez@fisiocenter.com'),
-        ('Lic. Valeria Ríos', 'Electroterapia / Kinesiología', 'valeria.rios@fisiocenter.com')
+        ('Lic. Nelly Fernández', 'Fisioterapeuta · Propietaria', 'nelly.fernandez@fisiofer.com'),
+        ('Lic. Fidel Villca', 'Fisioterapeuta · Propietario', 'fidel.villca@fisiofer.com'),
+        ('Lic. Roxana Ramos', 'Fisioterapeuta', 'roxana.ramos@fisiofer.com'),
+        ('Helen Quispe', 'Masajista Terapeuta', 'helen.quispe@fisiofer.com'),
+        ('Paula Romero', 'Masajista Terapeuta / Esteticista', 'paula.romero@fisiofer.com')
       `);
 
       // ── Servicios ──
       await pool.query(`
         INSERT INTO servicios (nombre, descripcion, duracion_min, precio) VALUES
-        ('Kinesiología', 'Evaluación y tratamiento del movimiento corporal para restaurar la funcionalidad física y mejorar tu calidad de vida mediante técnicas especializadas.', 45, 8500),
-        ('Terapia Manual', 'Técnicas manuales avanzadas para aliviar el dolor, reducir tensiones musculares y mejorar la movilidad articular de forma natural y efectiva.', 60, 10000),
-        ('Rehabilitación Deportiva', 'Programas de recuperación diseñados para deportistas. Volvé a tu actividad con seguridad, previniendo futuras lesiones y optimizando tu rendimiento.', 60, 12000),
-        ('Punción Seca', 'Tratamiento de puntos gatillo miofasciales mediante agujas de acupuntura para eliminar contracturas y dolores musculares persistentes.', 30, 7500),
-        ('Electroterapia', 'Aplicación de corrientes eléctricas terapéuticas para estimular los tejidos, reducir la inflamación y acelerar los procesos de recuperación.', 30, 6000)
+        ('Evaluación Diagnóstica', 'Evaluación completa para diagnóstico kinésico y plan de tratamiento', 30, 0),
+        ('Kinesiología', 'Evaluación y tratamiento del movimiento corporal', 45, 85),
+        ('Terapia Manual', 'Técnicas manuales avanzadas para aliviar el dolor y mejorar movilidad', 60, 100),
+        ('Rehabilitación Deportiva', 'Programas de recuperación para deportistas con lesiones', 60, 120),
+        ('Punción Seca', 'Tratamiento de puntos gatillo miofasciales con agujas', 30, 75),
+        ('Electroterapia', 'Corrientes eléctricas terapéuticas para reducir inflamación', 30, 60),
+        ('Acupuntura', 'Técnica de agujas para alivio del dolor y equilibrio energético', 30, 70),
+        ('Ventosas (Cupping)', 'Técnica de succión para promover circulación sanguínea', 30, 50),
+        ('Cavitación', 'Eliminación de grasa localizada por ultrasonido de baja frecuencia', 30, 25),
+        ('Lipoláser', 'Reducción de grasa localizada mediante láser de baja potencia', 30, 30),
+        ('Maderoterapia', 'Moldeamiento corporal con técnicas de madera', 30, 25),
+        ('Radiofrecuencia', 'Tratamiento para flacidez y arrugas con ondas de radiofrecuencia', 30, 30),
+        ('Ondas Rusas / Electroestimulación', 'Estimulación muscular para tonificación y levantamiento de glúteos', 30, 25),
+        ('Levantamiento de Glúteos', 'Técnica específica para tonificar y levantar glúteos', 30, 35),
+        ('Masaje Relajante (40 min)', 'Alivio de tensión y estrés con movimientos suaves', 40, 25),
+        ('Masaje Relajante (60 min)', 'Alivio de tensión y estrés con movimientos suaves', 60, 35),
+        ('Masaje Descontracturante (40 min)', 'Liberación de nudos musculares y tensiones profundas', 40, 25),
+        ('Masaje Descontracturante (60 min)', 'Liberación de nudos musculares y tensiones profundas', 60, 35),
+        ('Masaje con Piedras Calientes', 'Terapia relajante con piedras volcánicas calientes', 45, 35),
+        ('Drenaje Linfático', 'Técnica manual para activar el sistema linfático y eliminar toxinas', 45, 30)
       `);
 
       // ── Horarios disponibles ──
       const horarios = [];
-      for (let profId = 1; profId <= 3; profId++) {
+      for (let profId = 1; profId <= 5; profId++) {
         for (let dia = 1; dia <= 5; dia++) {
-          horarios.push([profId, dia, '09:00', '18:00']);
+          horarios.push([profId, dia, '08:00', '18:00']);
         }
-        // Sábado (6): 9:00 a 13:00
-        horarios.push([profId, 6, '09:00', '13:00']);
+        // Sábado (6): 8:00 a 14:00
+        horarios.push([profId, 6, '08:00', '14:00']);
       }
 
       for (const [profId, dia, inicio, fin] of horarios) {
@@ -98,9 +111,9 @@ async function initializeDatabase() {
         );
       }
 
-      console.log('✅ Datos de prueba insertados correctamente.');
+      console.log('✅ Datos de prueba de Fisiofer SPA insertados correctamente.');
     } else {
-      console.log('ℹ️  Datos ya existentes, seed omitido.');
+      console.log(`ℹ️  ${profesionalesCount} profesionales existentes. Seed omitido.`);
     }
   } catch (error) {
     console.error('❌ Error al inicializar base de datos:', error.message);
